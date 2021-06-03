@@ -104,6 +104,7 @@ export default () => {
         if (data.user.emailVerified) {
           getUserData(currentUser().uid)
             .then((doc) => {
+              console.log(doc);
               if (doc.exists) {
                 window.location.hash = '#/home';
               } else {

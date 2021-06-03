@@ -99,51 +99,38 @@ export default () => {
         // const userDisplayName = googleate.displayName;
         sendGeneralData(googleate.email, googleate.displayName, googleate.uid, googleate.photoURL);
         // sendGeneralData(currentUser().displayName);
-      })
+      });
   });
   // creación de usuarios
   const userSingUp = viewRegister.querySelector('#boxForm-Register');
-  userSingUp.addEventListener('submit', (e) => {
+  userSingUp.addEventListener('click', (e) => {
     e.preventDefault();
     // const usernameInput = viewRegister.querySelector('#theName').value;
     const emailInput = viewRegister.querySelector('#email').value;
     const passwordInput = viewRegister.querySelector('#password').value;
     const msgError = viewRegister.querySelector('.msg-error');
-
+    console.log(emailInput, passwordInput);
     userRegister(emailInput, passwordInput)
     // revisar el auth para agregar en el registro
 
-      .then(() => {
-        const user = firebase.auth().currentUser;
-        // Actualizar datos del perfil
-        // user.updateProfile({
-        //   displayName: usernameInput,
-        // });
-        sendGeneralData(emailInput, user.uid);
-        checkMail()
-
-          .then(() => {
-            msgError.classList.add('successful-message');
-            msgError.textContent = 'Please check your inbox to verify your account';
-          })
-
-          .catch((err) => {
-            msgError.classList.add('error-message');
-            msgError.textContent = err.message;
-          });
-        userSingUp.reset();
-      })
-      .catch((err) => {
-        msgError.classList.remove('successful-message');
-        msgError.classList.add('error-message');
-        msgError.textContent = err.message;
-        setTimeout(() => {
-          msgError.textContent = '';
-        }, 4000);
+      .then((user) => {
+        console.log(user);
+        if (user.user.emailVerified === true) {
+          window.location.hash = '#/login';
+          sendGeneralData(emailInput, passwordInput, user.uid);
+        } else {
+          checkMail()
+            .then(() => {
+              msgError.classList.add('successful-message');
+              msgError.textContent = 'Please check your inbox to verify your account';
+            })
+            .catch((err) => {
+              msgError.classList.add('error-message');
+              msgError.textContent = err.message;
+            });
+          userSingUp.reset();
+        }
       });
   });
-
-  // var user = firebase.auth().currentUser;
-
   return viewRegister;
 };
