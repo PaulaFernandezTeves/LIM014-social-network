@@ -1,44 +1,83 @@
 import '../_mocks_/firebase-mock.js';
-import { addPosts, updatePost } from '../src/firebase-controllers/fireStore-controller.js';
+import {
+  userRegister, loginEmail, loginGoogle, onAuthStateChanged, currentUser, logOut, checkMail,
+} from '../src/firebase-controllers/auth-controller.js';
 
-// const fixtureData = {
-//   _collection_: {
-//     posts: {
-//       _doc_: {
-//         post001: {
-//           date: '27/5/2021 11:01:06',
-//           publication:'hola',
-//           userId: 'abcx1',
-//         },
-//       },
-//     },
-//   },
-// };
-
-describe('addPosts', () => {
+describe('userRegister', () => {
   it('Debería ser una función', () => {
-    expect(typeof addPosts).toBe('function');
+    expect(typeof userRegister).toBe('function');
   });
-  // it('Debería agregar una publicación', done => addPosts('', 'mock', 'post').then(() => {
-  //   const callback = (post) => {
-  //     const result = post.find(e => e.post === 'mock');
-  //     expect(result.name).toEqual('mock');
-  //     done();
-  //   };
-  //   getPosts(callback);
-  // }));
+  it('Debería crear un nuevo usuario registrado', () => userRegister('wenclive7@gmail.com', 'mypassword')
+    .then((user) => {
+      expect(user.email).toBe('wenclive7@gmail.com');
+    }));
 });
 
-describe('updatePost', () => {
+describe('loginEmail', () => {
   it('Debería ser una función', () => {
-    expect(typeof updatePost).toBe('function');
+    expect(typeof userRegister).toBe('function');
   });
-  // it('Debería editar un post', done => updatePost('post1', 'nota editada').then(() => {
-  //   const callback = (post) => {
-  //     const result = post.find(element => element.id === 'post1');
-  //     expect(result.post).toBe('nota editada');
-  //     done();
-  //   };
-  //   getPosts(callback);
-  // }));
+  it('Debería ingresar con email', () => loginEmail('wenclive7@gmail.com', 'mypassword')
+    .then((user) => {
+      expect(user.email).toBe('wenclive7@gmail.com');
+    }));
+});
+
+describe('logingoogle', () => {
+  it('Debería ser una función', () => {
+    expect(typeof loginGoogle).toBe('function');
+  });
+  it('Debería ingresar con google', () => {
+    loginGoogle()
+      .then((user) => {
+        expect(user.strangePerson).toBe(false);
+      });
+  });
+});
+
+describe('onAuthStateChanged', () => {
+  it('Debería ser una función', () => {
+    expect(typeof onAuthStateChanged).toBe('function');
+  });
+  it('Debería cambiar el estado de autenticación', () => {
+    onAuthStateChanged((user) => {
+      if (user) {
+        (user.uid).then((doc) => {
+          expect(doc.data).toBe(true);
+        });
+      }
+    });
+  });
+});
+
+describe('currentUser', () => {
+  it('Debería ser una función', () => {
+    expect(typeof currentUser).toBe('function');
+  });
+  it('Debería reconocer al usuario actual', () => loginEmail('wenclive7@gmail.com', 'mypassword')
+    .then(() => {
+      expect(currentUser().email).toBe('wenclive7@gmail.com');
+    }));
+});
+
+describe('logOut', () => {
+  it('Debería ser una función', () => {
+    expect(typeof logOut).toBe('function');
+  });
+  it('Debería cerrar sesión', () => {
+    expect(logOut()).toBe(undefined);
+  });
+});
+
+describe('checkmail', () => {
+  it('Debería ser una función', () => {
+    expect(typeof checkMail).toBe('function');
+  });
+  it('Debería enviar un email de verificación', () => {
+    const mockSendEmail = jest.fn();
+    firebase.auth().currentUser.sendEmailVerification = mockSendEmail;
+    checkMail();
+    expect(mockSendEmail).toHaveBeenCalled();
+    expect(mockSendEmail.mock.calls).toHaveLength(1);
+  });
 });

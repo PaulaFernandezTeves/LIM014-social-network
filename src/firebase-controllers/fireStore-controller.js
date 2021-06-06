@@ -22,13 +22,13 @@ const getUserData = (userId) => {
 
 // Actualización de información del usuario
 
-const updateUserData = (userIdentity, name, email) => {
-  const dataBase = firebase.firestore();
-  return dataBase.collection('usuarios').doc(userIdentity).update({
-    username: name,
-    email,
-  });
-};
+// const updateUserData = (userIdentity, name, email) => {
+//   const dataBase = firebase.firestore();
+//   return dataBase.collection('usuarios').doc(userIdentity).update({
+//     username: name,
+//     email,
+//   });
+// };
 
 // Base de Datos de Posts
 const addPosts = (UserId, Publication, URLimage) => {
@@ -130,7 +130,7 @@ const updateLike = (id, likes) => {
 export {
   sendGeneralData,
   getUserData,
-  updateUserData,
+  // updateUserData,
   addPosts,
   getPosts,
   deletePost,
